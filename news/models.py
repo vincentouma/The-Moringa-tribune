@@ -11,6 +11,10 @@ class Editor(models.Model):
     def __str__(self):
         return self.first_name
 
+    class meta:
+        ordering =['name']
+
+
     def save_editor(self):
         self.save()
   
@@ -31,7 +35,12 @@ class Article(models.Model):
     editor = models.ForeignKey(Editor)
     tags = models.ManyToManyField(tags)
     pub_date = models.DateTimeField(auto_now_add=True)
+    article_image = models.ImageField(upload_to = 'articles/',default='DEFAULT VALUE')
 
+
+
+    def __str__(self):
+        return self.title
 
     def save_Article(self):
         self.save()
@@ -41,3 +50,15 @@ class Article(models.Model):
         today = dt.date.today()
         news = cls.objects.filter(pub_date__date = today)
         return news           
+
+
+    @classmethod
+    def days_news(cls,date):
+        news = cls.objects.filter(pub_date__date = date)
+        return news
+
+    @classmethod
+    def search_by_title(cls,search_term):
+        news = cls.objects.filter(title__icontains=search_term)
+        return news    
+    
